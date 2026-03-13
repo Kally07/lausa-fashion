@@ -1,0 +1,59 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Créer une commande{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <h4 class="fw-bold mb-4">➕ Nouvelle commande</h4>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Client</label>
+                    <input type="text"
+                           name="client"
+                           class="form-control"
+                           required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Total</label>
+                    <input type="number"
+                           name="total"
+                           step="0.01"
+                           class="form-control"
+                           required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Statut</label>
+                    <select name="statut" class="form-select">
+                        <option value="en_attente">En attente</option>
+                        <option value="payee">Payée</option>
+                        <option value="expediee">Expédiée</option>
+                        <option value="livree">Livrée</option>
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <a href="{% url 'dashboard:commandes_liste' %}"
+                       class="btn btn-light me-2">
+                        Annuler
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        Enregistrer
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Lausa Fashion{% endblock %}
+
+{% block content %}
+
+<!-- Section de bienvenue avec texte à gauche et slider à droite -->
+<!-- Section de bienvenue avec texte à gauche et slider à droite -->
+<section class="container mb-5 py-5" 
+         style="background-color: #f8f9fa; border-radius: 10px; overflow: hidden; position: relative;">
+    
+    <div class="row align-items-center">
+        <!-- Colonne Texte -->
+        <div class="col-lg-6 position-relative" style="z-index: 2;">
+            <h1 class="display-4 fw-bold mb-3">Bienvenue sur Lausa Fashion</h1>
+            <h2 class="h4 text-success mb-3">"Installez-vous confortablement et laissez-nous prendre soin de vos courses !"</h2>
+            <p class="lead mb-4">
+                Lausa Fashion est une entreprise de vente de vêtements et d'accessoires de mode, proposant
+                des articles modernes et accessibles, avec un service fiable et une gestion efficace des produits et des commandes.
+            </p>
+            <a href="#produits" class="btn btn-primary btn-lg me-2">Visiter</a>
+            <a href="#produits" class="btn btn-success btn-lg">Commander</a>
+        </div>
+
+        <!-- Colonne Slider -->
+        <div class="col-lg-6 position-relative" style="height: 400px; overflow: hidden; border-radius: 10px;">
+            <div id="slider-produits-container" class="h-100 w-100 position-relative">
+                <img class="slider-img position-absolute w-100 h-100" 
+                     src="{% static 'images_slider/image1.jpg' %}" 
+                     style="object-fit: cover; transition: opacity 1s ease-in-out;">
+                <img class="slider-img position-absolute w-100 h-100" 
+                     src="{% static 'images_slider/image2.jpg' %}" 
+                     style="object-fit: cover; transition: opacity 1s ease-in-out; opacity:0;">
+                <img class="slider-img position-absolute w-100 h-100" 
+                     src="{% static 'images_slider/image3.jpg' %}" 
+                     style="object-fit: cover; transition: opacity 1s ease-in-out; opacity:0;">
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Produits récents -->
+<section id="produits" class="container mb-5">
+    <h3 class="mb-4 text-center">Nos produits récents</h3>
+    <div class="row g-4">
+        {% for produit in derniers_produits %}
+        <div class="col-6 col-md-3">
+            <div class="card h-100 shadow-sm border-0 rounded-3">
+                {% if produit.image %}
+                    <img src="{{ produit.image.url }}" class="card-img-top" alt="{{ produit.nom }}" style="height:200px; object-fit:cover; border-top-left-radius: .75rem; border-top-right-radius: .75rem;">
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ produit.nom }}</h5>
+                    <p class="card-text fw-bold text-success">{{ produit.prix }} HTG</p>
+                    {% if user.is_authenticated %}
+                        <button class="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#ajouterPanierModal"
+                                data-produit-id="{{ produit.id }}"
+                                data-stock="{{ produit.stock }}">
+                            Ajouter au panier
+                        </button>
+                    {% else %}
+                        <button class="btn btn-primary btn-login-required">
+                            Ajouter au panier
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Slider JS -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const images = document.querySelectorAll(".slider-img");
+    let current = 0;
+
+    setInterval(() => {
+        images[current].style.opacity = 0;
+        current = (current + 1) % images.length;
+        images[current].style.opacity = 1;
+    }, 5000); // change toutes les 5 secondes
+
+    // Effet parallax lors du scroll
+    const container = document.getElementById("slider-produits-container");
+    window.addEventListener("scroll", () => {
+        const rect = container.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        const offset = rect.top / windowHeight * 30; // ajustable
+        images.forEach(img => {
+            img.style.transform = `translateY(${offset}px)`;
+        });
+    });
+});
+</script>
+
+{% endblock %}

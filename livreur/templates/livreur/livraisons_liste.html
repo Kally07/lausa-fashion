@@ -1,0 +1,49 @@
+{% extends "livreur/base.html" %}
+
+{% block title %}Mes livraisons{% endblock %}
+
+{% block content %}
+
+<h2>Liste des livraisons</h2>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>ID Livraison</th>
+            <th>Client</th>
+            <th>Adresse</th>
+            <th>Statut</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for livraison in livraisons %}
+        {% with commande=livraison.commandes.first %}
+        <tr>
+            <td>{{ livraison.id }}</td>
+            <td>{{ commande.user.username }}</td>
+            <td>{{ commande.adresse }}</td>
+            <td>
+                <span class="badge bg-info">
+                    {{ livraison.get_etat_display }}
+                </span>
+            </td>
+            <td>
+                <a href="{% url 'livreur:livraison_detail' livraison.id %}"
+                   class="btn btn-sm btn-primary">
+                    Voir
+                </a>
+            </td>
+        </tr>
+        {% endwith %}
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">
+                Aucune livraison trouvée.
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Modifier livreur{% endblock %}
+
+{% block content %}
+<h4 class="fw-bold py-3 mb-4">Modifier {{ livreur.utilisateur.username }}</h4>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label>Téléphone</label>
+        <input type="text" name="telephone" class="form-control" value="{{ livreur.telephone }}">
+    </div>
+    <div class="mb-3">
+        <label>Moyen de transport</label>
+        <input type="text" name="moyen_transport" class="form-control" value="{{ livreur.moyen_transport }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Modifier</button>
+    <a href="{% url 'dashboard:livreurs_liste' %}" class="btn btn-secondary">Annuler</a>
+</form>
+{% endblock %}

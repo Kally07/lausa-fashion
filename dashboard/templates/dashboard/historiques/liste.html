@@ -1,0 +1,43 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Historique des actions{% endblock %}
+
+{% block content %}
+<h4 class="fw-bold py-3 mb-4">Historique des actions</h4>
+
+<!-- Recherche -->
+<form method="get" class="mb-3 d-flex">
+    <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Rechercher par utilisateur" class="form-control me-2">
+    <button type="submit" class="btn btn-primary">Rechercher</button>
+</form>
+
+<!-- Tableau historique -->
+<div class="card">
+    <div class="table-responsive text-nowrap">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Utilisateur</th>
+                    <th>Action</th>
+                    <th>Date / Heure</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                {% for h in historiques %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ h.utilisateur.username }}</td>
+                    <td>{{ h.action }}</td>
+                    <td>{{ h.date_action|date:"d/m/Y H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center">Aucune action trouvée.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

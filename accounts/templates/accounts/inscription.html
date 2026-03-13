@@ -1,0 +1,56 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un compte - Lausa_Fashion</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-container">
+            <img src="{% static 'Logo/LausaFashion_1.png' %}" alt="Lausa Fashion Logo">
+        </div>
+        <h2>Créer un compte</h2>
+        <form method="POST">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="error">{{ form.non_field_errors }}</div>
+            {% endif %}
+            <!-- Username -->
+            <div class="input-group">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+                {% if form.username.errors %}<div class="error">{{ form.username.errors }}</div>{% endif %}
+            </div>
+            <!-- Email -->
+            <div class="input-group">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+                {% if form.email.errors %}<div class="error">{{ form.email.errors }}</div>{% endif %}
+            </div>
+            <!-- Mot de passe -->
+            <div class="input-group">
+                {{ form.password1.label_tag }}
+                {{ form.password1 }}
+                {% if form.password1.errors %}<div class="error">{{ form.password1.errors }}</div>{% endif %}
+            </div>
+            <!-- Confirmation mot de passe -->
+            <div class="input-group">
+                {{ form.password2.label_tag }}
+                {{ form.password2 }}
+                {% if form.password2.errors %}<div class="error">{{ form.password2.errors }}</div>{% endif %}
+            </div>
+
+            <button type="submit" class="btn-login">Créer un compte</button>
+
+            <p class="signup-text">
+                Déjà un compte ? <a href="{% url 'accounts:connexion' %}">Se connecter</a>
+            </p>
+        </form>
+    </div>
+</body>
+</html>

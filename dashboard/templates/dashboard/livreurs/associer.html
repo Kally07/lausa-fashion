@@ -1,0 +1,32 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Associer un utilisateur comme livreur{% endblock %}
+
+{% block content %}
+<h3>Associer un utilisateur existant comme livreur</h3>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="utilisateur_id">Sélectionnez un utilisateur</label>
+        <select name="utilisateur_id" id="utilisateur_id" class="form-select" required>
+            {% for user in utilisateurs %}
+                <option value="{{ user.id }}">{{ user.username }} - {{ user.email }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="telephone">Téléphone</label>
+        <input type="text" name="telephone" id="telephone" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label for="moyen_transport">Moyen de transport</label>
+        <input type="text" name="moyen_transport" id="moyen_transport" class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Associer</button>
+    <a href="{% url 'dashboard:livreurs_liste' %}" class="btn btn-secondary">Annuler</a>
+</form>
+{% endblock %}

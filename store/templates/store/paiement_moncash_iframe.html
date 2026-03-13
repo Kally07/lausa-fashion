@@ -1,0 +1,65 @@
+<!-- store/templates/store/paiement_moncash_iframe.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Paiement MonCash</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .iframe-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .fallback {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            border-radius: 5px;
+            margin: 20px;
+        }
+
+        .fallback a {
+            color: #0d6efd;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .fallback a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="iframe-container">
+    <iframe src="{{ redirect_url }}" title="Paiement MonCash"></iframe>
+</div>
+
+<div class="fallback">
+    <p>Si l'iframe ne s'affiche pas correctement, vous pouvez cliquer sur ce lien pour effectuer le paiement :</p>
+    <p><a href="{{ redirect_url }}" target="_blank">Payer avec MonCash</a></p>
+</div>
+
+</body>
+</html>

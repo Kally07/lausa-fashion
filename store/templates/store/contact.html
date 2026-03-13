@@ -1,0 +1,28 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Contact - Lausa Fahion{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>📩 Contactez-nous</h2>
+
+    {% if success %}
+        <div class="alert alert-success">✅ Merci, votre message a été envoyé.</div>
+    {% endif %}
+
+    <form method="post" class="mt-3">
+        {% csrf_token %}
+        <div class="mb-3">
+            <input type="text" name="nom" class="form-control" placeholder="Votre nom" required>
+        </div>
+        <div class="mb-3">
+            <input type="email" name="email" class="form-control" placeholder="Votre email" required>
+        </div>
+        <div class="mb-3">
+            <textarea name="message" class="form-control" rows="4" placeholder="Votre message..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+</div>
+{% endblock %}

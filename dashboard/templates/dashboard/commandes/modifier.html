@@ -1,0 +1,61 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Modifier commande{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <h4 class="fw-bold mb-4">✏️ Modifier la commande</h4>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Client</label>
+                    <input type="text"
+                           name="client"
+                           class="form-control"
+                           value="{{ commande.client }}"
+                           required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Total</label>
+                    <input type="number"
+                           name="total"
+                           step="0.01"
+                           class="form-control"
+                           value="{{ commande.total }}"
+                           required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Statut</label>
+                    <select name="statut" class="form-select">
+                        <option value="en_attente" {% if commande.statut == "en_attente" %}selected{% endif %}>En attente</option>
+                        <option value="payee" {% if commande.statut == "payee" %}selected{% endif %}>Payée</option>
+                        <option value="expediee" {% if commande.statut == "expediee" %}selected{% endif %}>Expédiée</option>
+                        <option value="livree" {% if commande.statut == "livree" %}selected{% endif %}>Livrée</option>
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <a href="{% url 'dashboard:commandes_liste' %}"
+                       class="btn btn-light me-2">
+                        Retour
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        Mettre à jour
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

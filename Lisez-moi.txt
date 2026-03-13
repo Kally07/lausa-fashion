@@ -1,0 +1,43 @@
+=========================================================================================================
+================================================Lisez-moi================================================
+=========================================================================================================
+
+Ce fichier vous permettra d'executer le Système de Gestion et de Vente Lausa Fashion.
+
+Pour executer le système:
+1- Ouvrir le dossier "lausa_fashion"
+2- Dans la barre d'adresse du dossier, taper : cmd puis presser Enter
+La fenêtre du Command Prompt s'affichera avec l'adresse du dossier
+3- Taper : venv\scripts\activate puis presser Enter
+L'environnement virtuel sera activé
+4- Taper : python manage.py runserver puis presser Enter
+5- Aller dans un navigateur puis taper : localhost:8000/store/ puis presser Enter
+
+NB: Ceci affichera l'interface client.
+
+============Se connecter en tant qu'Admin============
+Pour se connecter en tant qu'admin
+1- Ouvrir le dossier "lausa_fashion"
+2- Dans la barre d'adresse du dossier, taper : cmd puis presser Enter
+La fenêtre du Command Prompt s'affichera avec l'adresse du dossier
+3- Taper : venv\scripts\activate puis presser Enter
+L'environnement virtuel sera active
+4- Taper : python manage.py createsuperuser puis presser Enter
+5- Saisir les informations demadées puis presser Enter à chaque fois
+6- Quand c'est terminé, taper : python manage.py runserver puis presser Enter
+7- Aller dans un navigateur puis taper : localhost:8000/admin/ puis presser Enter
+8- Saisir les info de l'admin que vous avez créé
+9- Une fois connecté, aller dans Users, cliquer sur l'utilisateur que vous avez créé en console, puis changez son role en Admin.
+10- Une fois c'est fait, aller dans un navigateur, taper localhost:8000/store/ puis presser Enter
+11- Connecter avec l'administrateur nouvellement créer.
+
+NB: Sans changer le role de l'utilisateur admin créer en console, le système ne le reconnaitra pas comme Admin.
+
+
+============Pour payer les paniers============
+Les numeros de moncash valides sont:
+1- 47682410 ---> PIN : 4768
+2- 39433975 ---> PIN : 3943
+3- 34787899 ---> PIN : 3478
+4- 38074796 ---> PIN : 3807
+5- 47795140 ---> PIN : 4779

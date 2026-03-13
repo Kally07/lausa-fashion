@@ -1,0 +1,42 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Modifier l’Utilisateur{% endblock %}
+
+{% block content %}
+<h4 class="fw-bold py-3 mb-4">Modifier l’utilisateur {{ utilisateur.username }}</h4>
+
+<form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="username" class="form-label">Nom d’utilisateur</label>
+        <input type="text" class="form-control" name="username" id="username" value="{{ utilisateur.username }}" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" name="email" id="email" value="{{ utilisateur.email }}" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="role" class="form-label">Rôle</label>
+        <select name="role" id="role" class="form-select" required>
+            <option value="admin" {% if utilisateur.role == "admin" %}selected{% endif %}>Admin</option>
+            <option value="client" {% if utilisateur.role == "client" %}selected{% endif %}>Client</option>
+            <option value="livreur" {% if utilisateur.role == "livreur" %}selected{% endif %}>Livreur</option>
+        </select>
+    </div>
+
+    <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="is_active" name="is_active" {% if utilisateur.is_active %}checked{% endif %}>
+        <label class="form-check-label" for="is_active">Actif</label>
+    </div>
+
+    <div class="mb-3">
+        <label for="password" class="form-label">Mot de passe (laisser vide pour ne pas changer)</label>
+        <input type="password" class="form-control" name="password" id="password">
+    </div>
+
+    <button type="submit" class="btn btn-success">Modifier</button>
+    <a href="{% url 'dashboard:utilisateurs_liste' %}" class="btn btn-secondary">Annuler</a>
+</form>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "livreur/base.html" %}
+{% block title %}Détail livraison{% endblock %}
+
+{% block content %}
+
+<h2>Détail de la livraison</h2>
+
+<div class="card shadow">
+    <div class="card-body">
+
+        {% for commande in commandes %}
+        
+        <h5>Informations client</h5>
+        <p><strong>Nom complet :</strong> {{ commande.user.username }} {{ commande.user.prenom }}</p>
+        <p><strong>Adresse :</strong> {{ commande.adresse }}</p>
+        <p><strong>Téléphone :</strong> {{ commande.telephone }}</p>
+        <p><strong>Heure prévue :</strong> {{ livraison.date_livraison }}</p>
+
+        <h5 class="mt-4">Articles commandés</h5>
+        <ul>
+            {% for ligne in commande.lignes.all %}
+                <li>
+                    {{ ligne.produit.nom }} —
+                    Quantité: {{ ligne.quantite }} —
+                    Prix: {{ ligne.prix }} HTG
+                </li>
+            {% endfor %}
+        </ul>
+
+        {% endfor %}
+
+        <hr>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div id="motifField" style="display:none;">
+                <label>Motif d'annulation :</label>
+                <textarea name="motif" class="form-control"></textarea>
+            </div>
+
+            <div id="reportField" style="display:none;">
+                <label>Nouvelle date et heure :</label>
+                <input type="datetime-local" name="nouvelle_date" class="form-control">
+            </div>
+
+            <button type="submit" name="action" value="LIVREE" class="btn btn-success mt-3">
+                Livrer
+            </button>
+
+            <button type="button" onclick="showAnnulation()" class="btn btn-danger mt-3">
+                Annuler
+            </button>
+
+            <button type="button" onclick="showReport()" class="btn btn-warning mt-3">
+                Reporter
+            </button>
+
+            <button type="submit" id="submitAnnulation" name="action" value="ANNULEE"
+                    class="btn btn-danger mt-3" style="display:none;">
+                Confirmer annulation
+            </button>
+
+            <button type="submit" id="submitReport" name="action" value="REPORTER"
+                    class="btn btn-warning mt-3" style="display:none;">
+                Confirmer report
+            </button>
+
+        </form>
+
+    </div>
+</div>
+
+<script>
+function showAnnulation() {
+    document.getElementById("motifField").style.display = "block";
+    document.getElementById("submitAnnulation").style.display = "inline-block";
+}
+
+function showReport() {
+    document.getElementById("reportField").style.display = "block";
+    document.getElementById("submitReport").style.display = "inline-block";
+}
+</script>
+
+{% endblock %}

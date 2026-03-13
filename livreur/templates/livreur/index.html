@@ -1,0 +1,88 @@
+{% extends "livreur/base.html" %}
+{% block title %}Dashboard Livreur{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <!-- Cartes statistiques -->
+    <div class="col-md-3">
+        <div class="card text-center shadow">
+            <div class="card-body">
+                <h6>Total livraisons</h6>
+                <h3>{{ total }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow">
+            <div class="card-body">
+                <h6>Livraisons aujourd'hui</h6>
+                <h3>{{ livraisons_aujourdhui }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow">
+            <div class="card-body">
+                <h6>Commandes livrées</h6>
+                <h3>{{ livrees }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow">
+            <div class="card-body">
+                <h6>Livraisons annulées</h6>
+                <h3>{{ annulees }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr class="mt-4">
+
+<!-- Graphiques -->
+<div class="row mt-4">
+    <div class="col-md-6">
+        <h5>Répartition par statut</h5>
+        <canvas id="statusChart"></canvas>
+    </div>
+    <div class="col-md-6">
+        <h5>Livraisons de la semaine</h5>
+        <canvas id="weekChart"></canvas>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctxStatus = document.getElementById('statusChart').getContext('2d');
+    const statusChart = new Chart(ctxStatus, {
+        type: 'pie',
+        data: {
+            labels: Object.keys({{ chart_status|safe }}),
+            datasets: [{
+                data: Object.values({{ chart_status|safe }}),
+                backgroundColor: ['#FFC107','#17A2B8','#28A745','#DC3545']
+            }]
+        },
+    });
+
+    const ctxWeek = document.getElementById('weekChart').getContext('2d');
+    const weekChart = new Chart(ctxWeek, {
+        type: 'line',
+        data: {
+            labels: Object.keys({{ chart_week|safe }}),
+            datasets: [{
+                label: 'Livraisons',
+                data: Object.values({{ chart_week|safe }}),
+                borderColor: '#007BFF',
+                backgroundColor: 'rgba(0,123,255,0.1)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: { scales: { y: { beginAtZero: true } } }
+    });
+</script>
+
+{% endblock %}

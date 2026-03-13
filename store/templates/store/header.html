@@ -1,0 +1,145 @@
+<header style="background-color: #f8f9fa;">
+    <!-- NAVBAR PRINCIPAL -->
+    <div class="container-fluid px-4 py-2 d-flex align-items-center justify-content-between">
+        <!-- LOGO -->
+        <a href="{% url 'store:index' %}" class="d-flex align-items-center">
+            <img src="{% static 'Logo/LausaFashion_1.png' %}" alt="Logo Losa Store" style="height: 50px; margin-right: 10px;">
+            <span class="h4 m-0 text-primary">Losa Store</span>
+        </a>
+
+        <!-- MOBILE MENU TOGGLE -->
+        <button class="btn d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
+            <i class="fa fa-bars fa-lg"></i>
+        </button>
+
+        <!-- MENU DESKTOP -->
+        <nav class="d-none d-md-flex align-items-center flex-grow-1 ms-4">
+            <a href="{% url 'store:index' %}" class="nav-link px-3">Accueil</a>
+            <a href="{% url 'store:liste_produits' %}" class="nav-link px-3">Produits</a>
+            <a href="{% url 'store:contact' %}" class="nav-link px-3">Contact</a>
+            <a href="{% url 'store:apropos' %}" class="nav-link px-3">À propos</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'store:mes_commandes' %}" class="nav-link px-3">Mes commandes</a>
+            {% endif %}
+        </nav>
+
+        <!-- COMPTE & PANIER -->
+        <div class="d-flex align-items-center">
+            <!-- Recherche Desktop -->
+            <form method="get" action="{% url 'store:liste_produits' %}" class="d-none d-lg-flex me-3">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Rechercher un produit...">
+                    <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+                </div>
+            </form>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'store:panier' %}" class="btn btn-warning me-2 position-relative">
+                    🛒
+                    <span id="panier-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                </a>
+                <div class="dropdown">
+                    <a class="dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-user me-1"></i> {{ user.username }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'store:mes_commandes' %}"><i class="fa fa-box me-2"></i> Mes commandes</a></li>
+                        <li><a class="dropdown-item text-danger" href="{% url 'store:logout' %}"><i class="fa fa-sign-out-alt me-2"></i> Déconnexion</a></li>
+                    </ul>
+                </div>
+            {% else %}
+                <a href="{% url 'store:login' %}" class="btn btn-primary me-2">Connexion</a>
+                <a href="{% url 'store:register' %}" class="btn btn-success">Créer un compte</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- OFFCANVAS MOBILE MENU -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="mobileMenuLabel">Menu</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <!-- Menu liens -->
+            <nav class="d-flex flex-column">
+                <a href="{% url 'store:index' %}" class="nav-link py-2">Accueil</a>
+                <a href="{% url 'store:liste_produits' %}" class="nav-link py-2">Produits</a>
+                <a href="{% url 'store:contact' %}" class="nav-link py-2">Contact</a>
+                <a href="{% url 'store:apropos' %}" class="nav-link py-2">À propos</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'store:mes_commandes' %}" class="nav-link py-2">Mes commandes</a>
+                {% endif %}
+
+                <!-- Recherche Mobile -->
+                <form method="get" action="{% url 'store:liste_produits' %}" class="mt-3">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="Rechercher un produit...">
+                        <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+                    </div>
+                </form>
+
+                <!-- Catégories -->
+                <div class="mt-4">
+                    <h6 class="text-muted">Catégories</h6>
+                    <ul class="list-unstyled ps-0">
+                        {% for categorie in categories %}
+                            <li>
+                                <a href="{% url 'store:produits_par_categorie' categorie.id %}" class="d-flex justify-content-between py-1 text-dark text-decoration-none">
+                                    <span>{{ categorie.nom }}</span>
+                                    <span class="badge bg-secondary">{{ categorie.produit_set.count }}</span>
+                                </a>
+                            </li>
+                        {% empty %}
+                            <li class="text-muted">Aucune catégorie</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+</header>
+
+ <!-- RECHERCHE POST -->
+            <form method="post" action="{% url 'store:liste_produits' %}" class="d-none d-lg-flex me-3">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control border-end-0"
+                           placeholder="Rechercher un produit..."
+                           style="border-top-left-radius: 50px; border-bottom-left-radius: 50px;">
+                    <button class="btn btn-warning d-flex align-items-center justify-content-center"
+                            type="submit"
+                            style="border-top-right-radius: 50px; border-bottom-right-radius: 50px; padding: 0 20px;">
+                        <i class="fas fa-search text-white"></i>
+                    </button>
+                </div>
+            </form>
+
+            <!-- PANIER -->
+            <a href="{% url 'store:panier' %}" class="btn btn-warning position-relative me-3" style="padding-right: 2.5rem;">
+                🛒 Panier
+                <span id="panier-count"
+                      class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                      style="font-size: 0.75rem; padding: 0.25em 0.5em; min-width: 1.5rem; text-align:center;">
+                    {{ panier_count }}
+                </span>
+            </a>
+
+<script>
+function updatePanierCount() {
+    fetch("{% url 'store:panier_count_ajax' %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/json"
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("panier-count").textContent = data.count;
+    });
+}
+
+// Appelle cette fonction après un ajout au panier
+// updatePanierCount();
+</script>

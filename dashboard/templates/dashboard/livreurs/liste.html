@@ -1,0 +1,58 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Liste des livreurs{% endblock %}
+
+{% block content %}
+<h3 class="mb-4">Liste des livreurs</h3>
+
+<div class="mb-3">
+    <a href="{% url 'dashboard:livreur_creer' %}" class="btn btn-primary">Créer un nouveau livreur</a>
+    <a href="{% url 'dashboard:livreur_associer' %}" class="btn btn-secondary">Associer un utilisateur existant</a>
+</div>
+
+<table class="table table-bordered table-striped align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Moyen de transport</th>
+            <th>Statut</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for livreur in livreurs %}
+            <tr>
+                <td>{{ livreur.utilisateur.username }}</td>
+                <td>{{ livreur.utilisateur.email }}</td>
+                <td>{{ livreur.telephone }}</td>
+                <td>{{ livreur.moyen_transport }}</td>
+                <td>
+                    {% if livreur.utilisateur.statut %}
+                        <span class="badge bg-success">Actif</span>
+                    {% else %}
+                        <span class="badge bg-danger">Inactif</span>
+                    {% endif %}
+                </td>
+                <td class="d-flex gap-1">
+                    <!-- Modifier -->
+                    <a href="{% url 'dashboard:livreurs_modifier' livreur.id %}" class="btn btn-sm btn-warning">Modifier</a>
+
+                    <!-- Supprimer -->
+                    <form action="{% url 'dashboard:livreurs_supprimer' livreur.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Voulez-vous vraiment supprimer ce livreur ?');">
+                            Supprimer
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="6" class="text-center text-muted">Aucun livreur trouvé.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

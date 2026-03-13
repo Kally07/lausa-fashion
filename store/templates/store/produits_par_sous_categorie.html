@@ -1,0 +1,28 @@
+{% extends "store/base.html" %}
+
+{% block title %}Produits - {{ sous_categorie.nom }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2>{{ sous_categorie.categorie.nom }} : {{ sous_categorie.nom }}</h2>
+
+    {% if produits %}
+        <div class="row">
+            {% for produit in produits %}
+                <div class="col-md-3 mb-4">
+                    <div class="card h-100">
+                        <img src="{{ produit.image.url }}" class="card-img-top" alt="{{ produit.nom }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ produit.nom }}</h5>
+                            <p class="card-text">{{ produit.prix }} HTG</p>
+                            <a href="#" class="btn btn-primary">Voir produit</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Aucun produit disponible dans cette sous-catégorie.</p>
+    {% endif %}
+</div>
+{% endblock %}

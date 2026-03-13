@@ -1,0 +1,426 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard{% endblock %}</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'dashboard/assets/img/favicon/favicon.ico' %}">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Public+Sans:300,400,500,600,700">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="{% static 'dashboard/assets/vendor/fonts/boxicons.css' %}">
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{% static 'dashboard/assets/vendor/css/core.css' %}">
+    <link rel="stylesheet" href="{% static 'dashboard/assets/vendor/css/theme-default.css' %}">
+    <link rel="stylesheet" href="{% static 'dashboard/assets/css/demo.css' %}">
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="{% static 'dashboard/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}">
+    <link rel="stylesheet" href="{% static 'dashboard/assets/vendor/libs/apex-charts/apex-charts.css' %}">
+
+    <style>
+        /* --- Sneat custom scroll & layout --- */
+        html, body {
+            height: 100%;
+            overflow: hidden; /* plus de scroll global */
+        }
+
+        .layout-wrapper,
+        .layout-container,
+        .layout-page {
+            height: 100vh; /* pleine hauteur */
+        }
+
+        /* Sidebar scrollable */
+        .layout-menu {
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        /* Navbar fixe */
+        .layout-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        /* Contenu scrollable */
+        .content-wrapper {
+            height: calc(100vh - 64px); /* 64px = hauteur navbar Sneat */
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        /* Sous-menus */
+        .menu-sub {
+            display: none;
+            list-style: none;
+            padding-left: 1.5rem;
+        }
+
+        .menu-item.open > .menu-sub {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+
+            <!-- Menu -->
+            <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+                <div class="logo-container">
+                    <a href="{% url 'dashboard:index' %}" class="app-brand-link">
+                        <img src="{% static 'Logo/LausaFashion_1.png' %}" alt="Lausa Fashion Logo" width="90">
+                    </a>
+                    
+                </div>
+                <div class="app-brand demo">
+                    <a href="{% url 'dashboard:index' %}" class="app-brand-link">
+                        <span class="app-brand-text demo menu-text fw-bolder">Dashboard</span>
+                    </a>
+                    <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+                        <i class="bx bx-chevron-left bx-sm align-middle"></i>
+                    </a>
+                </div>
+
+                <div class="menu-inner-shadow"></div>
+
+                <ul class="menu-inner py-1">
+                    {% if request.user.role == 'admin' %}
+                    <!-- UTILISATEURS -->
+                    <li class="menu-item {% if '/dashboard/utilisateurs' in request.path %}open{% endif %}">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon bx bx-user"></i>
+                            <div>Utilisateurs</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="{% url 'dashboard:utilisateurs_liste' %}" class="menu-link">
+                                    <div>Liste des utilisateurs</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="{% url 'dashboard:utilisateur_creer' %}" class="menu-link">
+                                    <div>Créer un utilisateur</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- CLIENTS -->
+                    <li class="menu-item {% if '/dashboard/clients' in request.path %}open{% endif %}">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon bx bx-user-check"></i>
+                            <div>Clients</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="{% url 'dashboard:clients_liste' %}" class="menu-link">
+                                    <div>Liste des clients</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="{% url 'dashboard:clients_creer' %}" class="menu-link">
+                                    <div>Créer un client</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- LIVREURS -->
+                    <li class="menu-item {% if '/dashboard/livreurs' in request.path %}open{% endif %}">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon bx bx-truck"></i>
+                            <div>Livreurs</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="{% url 'dashboard:livreurs_liste' %}" class="menu-link">
+                                    <div>Liste des livreurs</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="{% url 'dashboard:livreurs_creer' %}" class="menu-link">
+                                    <div>Créer un livreur</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- PRODUITS -->
+                    <li class="menu-item {% if '/dashboard/produits' in request.path %}open{% endif %}">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon bx bx-box"></i>
+                            <div>Produits</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="{% url 'dashboard:produits_liste' %}" class="menu-link">
+                                    <div>Liste des produits</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="{% url 'dashboard:produits_creer' %}" class="menu-link">
+                                    <div>Ajouter un produit</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- CATÉGORIES -->
+                    <li class="menu-item {% if '/dashboard/categories' in request.path %}open{% endif %}">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon bx bx-category"></i>
+                            <div>Catégories</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="{% url 'dashboard:categories_liste' %}" class="menu-link">
+                                    <div>Liste des catégories</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="{% url 'dashboard:categories_creer' %}" class="menu-link">
+                                    <div>Ajouter une catégorie</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- SOUS-CATÉGORIES -->
+                    <li class="menu-item {% if '/dashboard/sous_categories' in request.path %}open{% endif %}">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon bx bx-category"></i>
+                            <div>Sous-Catégories</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="{% url 'dashboard:sous_categories_liste' %}" class="menu-link">
+                                    <div>Liste des sous-catégories</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="{% url 'dashboard:sous_categories_creer' %}" class="menu-link">
+                                    <div>Ajouter une sous-catégorie</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- COMMANDES -->
+                    <li class="menu-item {% if '/dashboard/commandes' in request.path %}open{% endif %}">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon bx bx-shopping-bag"></i>
+                            <div>Commandes</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="{% url 'dashboard:commandes_liste' %}" class="menu-link">
+                                    <div>Toutes les commandes</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="{% url 'dashboard:commandes_en_attente' %}" class="menu-link">
+                                    <div>En attente</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="{% url 'dashboard:commandes_validees' %}" class="menu-link">
+                                    <div>Validées</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- LIVRAISONS -->
+                    <li class="menu-item {% if '/dashboard/livraisons' in request.path %}open{% endif %}">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon bx bx-archive"></i>
+                            <div>Livraisons</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="{% url 'dashboard:livraisons_liste' %}" class="menu-link">
+                                    <div>Liste des livraisons</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="{% url 'dashboard:livraisons_creer' %}" class="menu-link">
+                                    <div>Créer une livraison</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- PAIEMENTS -->
+                    <li class="menu-item {% if '/dashboard/paiements' in request.path %}open{% endif %}">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon bx bx-credit-card"></i>
+                            <div>Paiements</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="{% url 'dashboard:paiements_liste' %}" class="menu-link">
+                                    <div>Liste des paiements</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- HISTORIQUES / RAPPORTS -->
+                    <li class="menu-item {% if '/dashboard/historiques' in request.path %}open{% endif %}">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon bx bx-history"></i>
+                            <div>Historiques</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="{% url 'dashboard:historique_actions' %}" class="menu-link">
+                                    <div>Actions administrateur</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    {% endif %}
+
+                    <!-- LIVREUR -->
+                    {% if request.user.role == 'livreur' %}
+                    <li class="menu-item">
+                        <a href="{% url 'dashboard:livraisons_livreur' %}" class="menu-link">
+                            <i class="menu-icon bx bx-map"></i>
+                            <div>Mes livraisons</div>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                </ul>
+
+            </aside>
+            <!-- /Menu -->
+
+            <!-- Layout container -->
+            <div class="layout-page">
+                <!-- Navbar -->
+                <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
+                    <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+
+                        <!-- MESSAGE DE BIENVENUE -->
+                        {% if request.user.is_authenticated %}
+                        <div class="me-4 d-none d-lg-block">
+                            <span class="fw-semibold text-dark">
+                                Bonjour,
+                                <span class="text-primary">{{ request.user.username }}</span> 👋
+                            </span>
+                            <br>
+                            <small class="text-muted">
+                                {% if request.user.role == "admin" %}
+                                    Administrateur
+                                {% elif request.user.role == "client" %}
+                                    Client
+                                {% elif request.user.role == "livreur" %}
+                                    Livreur
+                                {% endif %}
+                            </small>
+                        </div>
+                        {% endif %}
+
+                        <!-- User -->
+                        <ul class="navbar-nav flex-row align-items-center ms-auto">
+                            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                                <a class="nav-link dropdown-toggle hide-arrow" href="#" data-bs-toggle="dropdown">
+                                    <div class="avatar avatar-online">
+                                        <img src="{% static 'dashboard/assets/img/avatars/1.png' %}" 
+                                            alt 
+                                            class="w-px-40 h-auto rounded-circle">
+                                    </div>
+                                </a>
+
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="#">
+                                            <div class="d-flex">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <div class="avatar avatar-online">
+                                                        <img src="{% static 'dashboard/assets/img/avatars/1.png' %}" 
+                                                            alt 
+                                                            class="w-px-40 h-auto rounded-circle">
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <span class="fw-semibold d-block">
+                                                        {{ request.user.username }}
+                                                    </span>
+                                                    <small class="text-muted">
+                                                        {% if request.user.role == "admin" %}
+                                                            Administrateur
+                                                        {% elif request.user.role == "client" %}
+                                                            Client
+                                                        {% elif request.user.role == "livreur" %}
+                                                            Livreur
+                                                        {% endif %}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+
+                                    <li><div class="dropdown-divider"></div></li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'accounts:deconnexion' %}">
+                                            <i class="bx bx-power-off me-2"></i>
+                                            <span>Déconnexion</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    </div>
+                </nav>
+                <!-- /Navbar -->
+
+                <!-- Content wrapper -->
+                <div class="content-wrapper">
+                    <div class="container-xxl flex-grow-1 container-p-y">
+                        {% block content %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script src="{% static 'dashboard/assets/vendor/libs/jquery/jquery.js' %}"></script>
+    <script src="{% static 'dashboard/assets/vendor/libs/popper/popper.js' %}"></script>
+    <script src="{% static 'dashboard/assets/vendor/js/bootstrap.js' %}"></script>
+    <script src="{% static 'dashboard/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+    <script src="{% static 'dashboard/assets/js/main.js' %}"></script>
+
+    <script>
+        // JS pour ouvrir les sous-menus
+        document.addEventListener("DOMContentLoaded", function() {
+            const toggles = document.querySelectorAll(".menu-toggle");
+            toggles.forEach(function(toggle) {
+                toggle.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    this.parentElement.classList.toggle("open");
+                });
+            });
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

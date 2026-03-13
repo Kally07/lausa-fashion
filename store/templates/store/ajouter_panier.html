@@ -1,0 +1,17 @@
+<form id="ajouter-panier-form" method="post" data-url="{% url 'store:ajouter_au_panier' produit.id %}">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="quantite" class="form-label">Quantité</label>
+    <input type="number" name="quantite" id="quantite" class="form-control" value="1" min="1" max="{{ produit.stock }}">
+    <small class="text-muted">Stock disponible : {{ produit.stock }}</small>
+  </div>
+  <button 
+  class="btn btn-outline-primary"
+  data-bs-toggle="modal"
+  data-bs-target="#ajouterPanierModal"
+  data-produit-id="{{ produit.id }}"
+  data-stock="{{ produit.stock }}">
+  Ajouter au panier
+</button>
+
+</form>

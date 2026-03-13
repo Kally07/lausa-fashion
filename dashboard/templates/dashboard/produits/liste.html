@@ -1,0 +1,131 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Produits{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-3">Liste des Produits</h2>
+
+<!-- 🔍 FILTRES -->
+<form method="get" class="row g-2 mb-4">
+    <div class="col-md-4">
+        <input
+            type="text"
+            name="q"
+            class="form-control"
+            placeholder="Rechercher un produit..."
+            value="{{ q|default:'' }}"
+        >
+    </div>
+
+    <div class="col-md-3">
+        <select name="categorie" class="form-select" id="categorie-select">
+            <option value="">-- Toutes les catégories --</option>
+            {% for cat in categories %}
+                <option value="{{ cat.id }}" {% if cat.id == categorie_id %}selected{% endif %}>
+                    {{ cat.nom }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <select name="sous_categorie" class="form-select" id="sous-categorie-select">
+            <option value="">-- Toutes les sous-catégories --</option>
+            {% for sc in sous_categories %}
+                <option value="{{ sc.id }}" {% if sc.id == sous_categorie_id %}selected{% endif %}>
+                    {{ sc.nom }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="col-md-2 d-grid">
+        <button class="btn btn-primary">Filtrer</button>
+    </div>
+</form>
+
+<div class="d-flex justify-content-end mb-3">
+    <a href="{% url 'dashboard:produits_creer' %}" class="btn btn-success">
+        ➕ Créer un produit
+    </a>
+</div>
+
+<!-- 📦 TABLE PRODUITS -->
+<table class="table table-striped table-bordered align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Nom</th>
+            <th>Prix</th>
+            <th>Stock</th>
+            <th>Catégories</th>
+            <th>Sous-catégorie</th>
+            <th class="text-center">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for produit in produits %}
+        <tr>
+            <td>{{ produit.nom }}</td>
+            <td>{{ produit.prix }} HTG</td>
+            <td>{{ produit.stock }}</td>
+
+            <!-- 🟦 CATEGORIES -->
+            <td>
+                {% if produit.sous_categorie %}
+                    {{ produit.sous_categorie.categorie.nom }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+
+            <!-- 🟩 SOUS-CATEGORIE -->
+            <td>
+                {% if produit.sous_categorie %}
+                    {{ produit.sous_categorie.nom }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+
+            <td class="text-center">
+                <a href="{% url 'dashboard:produits_modifier' produit.id %}" class="btn btn-sm btn-primary">
+                    Modifier
+                </a>
+                <a href="{% url 'dashboard:produits_supprimer' produit.id %}" class="btn btn-sm btn-danger"
+                   onclick="return confirm('Supprimer ce produit ?');">
+                    Supprimer
+                </a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" class="text-center text-muted">Aucun produit trouvé</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+
+
+<script>
+document.getElementById('categorie-select').addEventListener('change', function() {
+    const catId = this.value;
+    const scSelect = document.getElementById('sous-categorie-select');
+    scSelect.innerHTML = '<option value="">-- Toutes les sous-catégories --</option>';
+
+    if (!catId) return;
+
+    fetch(`/dashboard/ajax/sous_categories/${catId}/`)
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(sc => {
+                const opt = document.createElement('option');
+                opt.value = sc.id;
+                opt.textContent = sc.nom;
+                scSelect.appendChild(opt);
+            });
+        });
+});
+</script>

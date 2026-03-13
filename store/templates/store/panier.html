@@ -1,0 +1,113 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Mon Panier{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Mon Panier</h2>
+
+    {% if produits_panier %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Prix Unitaire</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="panier-body">
+            {% for item in produits_panier %}
+            <tr id="item-{{ item.id }}">
+                <td>{{ item.produit.nom }}</td>
+                <td>
+                    <input type="number"
+                           min="1"
+                           max="{{ item.produit.stock }}"
+                           class="quantite-input"
+                           data-item-id="{{ item.id }}"
+                           value="{{ item.quantite }}">
+                    <small class="text-muted">Stock : {{ item.produit.stock }}</small>
+                </td>
+                <td>{{ item.produit.prix }} HTG</td>
+                <td class="item-total">{{ item.total }} HTG</td>
+                <td>
+                    <button type="button"
+                            class="btn btn-danger btn-sm supprimer-btn"
+                            data-item-id="{{ item.id }}">
+                        Supprimer
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h4>Total : <span id="total-panier">{{ total_panier }}</span> HTG</h4>
+
+    <!-- Bouton Commander → redirige vers valider_commande -->
+    <div class="text-end mt-3">
+        <a href="{% url 'store:valider_commande' %}" class="btn btn-success">
+            Commander
+        </a>
+    </div>
+
+    {% else %}
+    <p>Votre panier est vide.</p>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    // Supprimer un item
+    document.querySelectorAll(".supprimer-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            const itemId = button.dataset.itemId;
+            fetch("{% url 'store:supprimer_du_panier' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrftoken,
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: new URLSearchParams({ item_id: itemId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success){
+                    const row = document.getElementById(`item-${itemId}`);
+                    if(row) row.remove();
+                    document.getElementById("total-panier").textContent = data.total_panier || 0;
+                }
+            });
+        });
+    });
+
+    // Modifier quantité
+    document.querySelectorAll(".quantite-input").forEach(input => {
+        input.addEventListener("change", function() {
+            const itemId = this.dataset.itemId;
+            const quantite = this.value;
+            fetch("{% url 'store:mise_a_jour_panier_ajax' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrftoken,
+                    "X-Requested-With": "XMLHttpRequest",
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `item_id=${itemId}&action=set&quantite=${quantite}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success){
+                    const rowTotal = document.querySelector(`#item-${itemId} .item-total`);
+                    if(rowTotal) rowTotal.textContent = data.total_item + " HTG";
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

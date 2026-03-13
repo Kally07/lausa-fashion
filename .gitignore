@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Environnement virtuel
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Base de données
+db.sqlite3
+db.sqlite3-journal
+
+# Logs
+*.log
+
+# Variables d'environnement
+.env
+
+# Django
+*.pot
+*.pyc
+local_settings.py
+
+# Fichiers de migration compilés
+*.mo
+
+# Media uploads
+/media
+
+# Static files collectés
+/staticfiles
+
+# IDE / éditeurs
+.vscode/
+.idea/
+
+# Fichiers temporaires
+*.swp
+*.swo

@@ -1,0 +1,294 @@
+{% extends "store/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Valider la commande</h2>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post" action="{% url 'store:valider_commande' %}" id="commandeForm">
+    {% csrf_token %}
+
+    <!-- Adresse -->
+    <div class="mb-3">
+        <label class="form-label">Adresse de livraison</label>
+        <input type="text" name="adresse" id="adresse" class="form-control" required>
+    </div>
+
+    <!-- Téléphone -->
+    <div class="mb-3">
+        <label class="form-label">Téléphone</label>
+        <input type="text" name="telephone" id="telephone" class="form-control" required>
+    </div>
+
+    <!-- Date livraison -->
+    <div class="mb-3">
+        <label class="form-label">Date de livraison</label>
+        <input type="date" name="date_livraison" id="date_livraison" class="form-control" min="{{ today }}" required>
+    </div>
+
+    <!-- Mode paiement -->
+    <div class="mb-3">
+        <label class="form-label">Mode de paiement</label>
+        <select name="mode_paiement" id="mode_paiement" class="form-select" required>
+            <option value="">-- Sélectionnez --</option>
+            <option value="MonCash">MonCash</option>
+            <option value="Cash">Paiement en espèces</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">
+        Valider la commande
+    </button>
+
+  </form>
+</div>
+
+<!-- ======================= -->
+<!-- MODAL MONCASH -->
+<!-- ======================= -->
+<style>
+.moncash-card {
+    width: 340px;
+    margin: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+.moncash-header {
+    background: linear-gradient(to bottom, #ff3b1f, #d60000);
+    color: white;
+    padding: 10px 15px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.moncash-body {
+    background: #f3f3f3;
+    padding: 20px;
+}
+
+.moncash-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.moncash-info h6 {
+    margin: 0;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.moncash-total {
+    color: green;
+    font-weight: bold;
+}
+
+.moncash-input-group {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.moncash-prefix {
+    background: #e6e6e6;
+    border: 1px solid #ccc;
+    padding: 8px 10px;
+    font-size: 14px;
+}
+
+.moncash-input {
+    flex: 1;
+    border: 1px solid #ccc;
+    padding: 8px;
+    font-size: 14px;
+}
+
+.moncash-pin {
+    width: 100%;
+    border: 1px solid #ccc;
+    padding: 8px;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.moncash-btn {
+    width: 100%;
+    background: #d60000;
+    border: none;
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+.moncash-btn:hover {
+    background: #b80000;
+}
+</style>
+
+
+
+<div class="modal fade" id="moncashModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background:transparent;border:none;">
+
+      <div class="moncash-card">
+
+        <div class="moncash-header">
+          Secure Payment
+        </div>
+
+        <div class="moncash-body">
+
+          <div class="moncash-info">
+            <div>
+              <h6>{{ request.site.name|default:"LAUSA FASHION" }}</h6>
+              <div class="moncash-total">
+                Total: {{ total_panier }} HTG
+              </div>
+            </div>
+            <img src="{% static 'img/moncash-logo.png' %}" height="35">
+          </div>
+
+          <form id="moncashForm">
+            {% csrf_token %}
+
+            <input type="hidden" name="adresse">
+            <input type="hidden" name="telephone">
+            <input type="hidden" name="date_livraison">
+
+            <div class="moncash-input-group">
+                <div class="moncash-prefix">509</div>
+                <input type="text"
+                        name="numero"
+                        class="moncash-input"
+                        maxlength="8"
+                        inputmode="numeric"
+                        pattern="[0-9]{8}"
+                        placeholder="XXXXXXXX"
+                        required>
+                </div>
+
+                <input type="password"
+                    name="motpass"
+                    maxlength="4"
+                    class="moncash-pin"
+                    inputmode="numeric"
+                    pattern="[0-9]{4}"
+                    placeholder="PIN"
+                    required>
+
+            <button type="submit" class="moncash-btn">
+              Pay
+            </button>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ======================= -->
+<!-- SCRIPT LOGIQUE PROPRE -->
+<!-- ======================= -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const commandeForm = document.getElementById("commandeForm");
+    const modePaiement = document.getElementById("mode_paiement");
+    const moncashModalEl = document.getElementById("moncashModal");
+    const moncashForm = document.getElementById("moncashForm");
+
+    const numeroInput = document.querySelector('input[name="numero"]');
+    const pinInput = document.querySelector('input[name="motpass"]');
+
+    /* ===========================
+       1️⃣ OUVERTURE MODAL
+    ============================ */
+
+    commandeForm.addEventListener("submit", function(e) {
+        if (modePaiement.value === "MonCash") {
+            e.preventDefault();
+
+            const modal = new bootstrap.Modal(moncashModalEl);
+            modal.show();
+        }
+    });
+
+    /* ===========================
+       2️⃣ NUMÉRIQUE UNIQUEMENT
+    ============================ */
+
+    function onlyNumbers(input) {
+        input.addEventListener("input", function () {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    }
+
+    onlyNumbers(numeroInput);
+    onlyNumbers(pinInput);
+
+    numeroInput.addEventListener("input", function () {
+        if (this.value.length === 8) {
+            pinInput.focus();
+        }
+    });
+
+    /* ===========================
+       3️⃣ PAIEMENT AJAX
+    ============================ */
+
+    moncashForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(moncashForm);
+
+        // Injecter les infos de la commande
+        formData.set("adresse", document.querySelector("#adresse").value);
+        formData.set("telephone", document.querySelector("#telephone").value);
+        formData.set("date_livraison", document.querySelector("#date_livraison").value);
+
+        fetch("{% url 'store:paiement_moncash_local_ajax' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            if (data.success) {
+
+                // Fermer modal proprement
+                bootstrap.Modal.getInstance(moncashModalEl).hide();
+
+                // Redirection
+                window.location.href = data.redirect_url;
+
+            } else {
+                alert(data.message);
+            }
+
+        })
+        .catch(() => {
+            alert("Erreur serveur. Réessayez.");
+        });
+    });
+
+});
+</script>
+
+{% endblock %}

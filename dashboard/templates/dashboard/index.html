@@ -1,0 +1,225 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h4 class="fw-bold py-3 mb-4">Tableau de bord</h4>
+
+<!-- ===================== -->
+<!-- STATISTIQUES RAPIDES -->
+<!-- ===================== -->
+<div class="row">
+
+    <!-- Produits -->
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-muted mb-1">Produits</h6>
+                    <h3 class="fw-bold mb-0">{{ total_produits }}</h3>
+                </div>
+                <div class="avatar bg-primary text-white rounded-circle p-3">
+                    <i class="bx bx-box fs-3"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Commandes -->
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-muted mb-1">Commandes</h6>
+                    <h3 class="fw-bold mb-0">{{ total_commandes }}</h3>
+                </div>
+                <div class="avatar bg-success text-white rounded-circle p-3">
+                    <i class="bx bx-shopping-bag fs-3"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clients -->
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-muted mb-1">Clients</h6>
+                    <h3 class="fw-bold mb-0">{{ total_clients }}</h3>
+                </div>
+                <div class="avatar bg-warning text-white rounded-circle p-3">
+                    <i class="bx bx-user fs-3"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ===================== -->
+<!-- GRAPHIQUES -->
+<!-- ===================== -->
+<div class="row mb-4">
+
+    <!-- Ventes mensuelles -->
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+            <h5 class="card-header bg-white fw-bold">Ventes du mois</h5>
+            <div class="card-body">
+                <div id="chart-sales"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Produits par catégorie -->
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0">
+            <h5 class="card-header bg-white fw-bold">Produits par catégorie</h5>
+            <div class="card-body">
+                <div id="chart-categories"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ===================== -->
+<!-- DERNIERES COMMANDES -->
+<!-- ===================== -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <h5 class="card-header bg-white fw-bold">3 Dernières commandes</h5>
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Commande #</th>
+                            <th>Client</th>
+                            <th>Date</th>
+                            <th>Montant</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for commande in dernieres_commandes %}
+                        <tr>
+                            <td>{{ commande.id }}</td>
+                            <td>{{ commande.user.username }}</td>
+                            <td>{{ commande.date_commande|date:"d/m/Y H:i" }}</td>
+                            <td>{{ commande.paiement.montant_total }} HTG</td>
+                            <td>
+                                {% if commande.statut == 'EN_PREPARATION' %}
+                                    <span class="badge bg-warning text-dark">En préparation</span>
+                                {% elif commande.statut == 'EXPEDIEE' %}
+                                    <span class="badge bg-success">Expédiée</span>
+                                {% elif commande.statut == 'ANNULEE' %}
+                                    <span class="badge bg-danger">Annulée</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4">
+                                Aucune commande récente
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<!-- ===================== -->
+<!-- DONNEES JSON -->
+<!-- ===================== -->
+{{ ventes_mois|json_script:"ventes_mois_data" }}
+{{ jours_mois|json_script:"jours_mois_data" }}
+{{ categories|json_script:"categories_data" }}
+{{ quantites|json_script:"quantites_data" }}
+
+<!-- ApexCharts -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    var ventes_mois = JSON.parse(document.getElementById("ventes_mois_data").textContent);
+    var jours_mois = JSON.parse(document.getElementById("jours_mois_data").textContent);
+    var categories = JSON.parse(document.getElementById("categories_data").textContent);
+    var quantites = JSON.parse(document.getElementById("quantites_data").textContent);
+
+    /* ===================== */
+    /* GRAPH VENTES */
+    /* ===================== */
+    var optionsSales = {
+        chart: {
+            type: 'area',
+            height: 350,
+            toolbar: { show: false }
+        },
+        series: [{
+            name: 'Ventes',
+            data: ventes_mois
+        }],
+        xaxis: {
+            categories: jours_mois
+        },
+        stroke: {
+            curve: 'smooth',
+            width: 3
+        },
+        colors: ['#28a745'],
+        fill: {
+            type: "gradient",
+            gradient: {
+                shadeIntensity: 1,
+                opacityFrom: 0.4,
+                opacityTo: 0.1,
+                stops: [0, 90, 100]
+            }
+        },
+        tooltip: {
+            y: {
+                formatter: function(val) {
+                    return val + " HTG";
+                }
+            }
+        }
+    };
+
+    var chartSales = new ApexCharts(document.querySelector("#chart-sales"), optionsSales);
+    chartSales.render();
+
+    /* ===================== */
+    /* GRAPH PIE CATEGORIES */
+    /* ===================== */
+    var optionsPie = {
+        chart: {
+            type: 'donut',
+            height: 350
+        },
+        series: quantites,
+        labels: categories,
+        legend: {
+            position: 'bottom'
+        },
+        dataLabels: {
+            enabled: true
+        }
+    };
+
+    var chartCategories = new ApexCharts(document.querySelector("#chart-categories"), optionsPie);
+    chartCategories.render();
+
+});
+</script>
+
+{% endblock %}
