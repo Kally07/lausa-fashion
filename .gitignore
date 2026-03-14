@@ -16,8 +16,8 @@ venv.bak/
 Thumbs.db
 
 # Base de données
-db.sqlite3
-db.sqlite3-journal
+#db.sqlite3
+#db.sqlite3-journal
 
 # Logs
 *.log

@@ -1,28 +1,130 @@
 {% extends 'store/base.html' %}
 {% load static %}
 
-{% block title %}Contact - Lausa Fahion{% endblock %}
+{% block title %}Contact - Lausa Fashion{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2>📩 Contactez-nous</h2>
 
-    {% if success %}
-        <div class="alert alert-success">✅ Merci, votre message a été envoyé.</div>
-    {% endif %}
+<style>
+.contact-section{
+    margin-top:70px;
+}
 
-    <form method="post" class="mt-3">
-        {% csrf_token %}
-        <div class="mb-3">
-            <input type="text" name="nom" class="form-control" placeholder="Votre nom" required>
+.contact-card{
+    background:#ffffff;
+    border-radius:8px;
+    padding:25px;
+    text-align:center;
+    box-shadow:0 2px 10px rgba(0,0,0,0.08);
+    transition:0.3s;
+}
+
+.contact-card:hover{
+    transform:translateY(-5px);
+}
+
+.contact-icon{
+    font-size:28px;
+    margin-bottom:10px;
+    color:#da9938;
+}
+
+.contact-form-box{
+    background:#e5b99b;
+    padding:40px;
+    border-radius:8px;
+}
+
+.contact-form-box input,
+.contact-form-box textarea{
+    margin-bottom:15px;
+}
+
+.contact-title{
+    font-weight:bold;
+    margin-bottom:20px;
+}
+</style>
+
+<div class="container contact-section">
+    <div class="row align-items-center">
+
+        <!-- Partie gauche -->
+        <div class="col-md-6">
+            <div class="row g-3">
+
+                <!-- Adresse -->
+                <div class="col-6">
+                    <div class="contact-card">
+                       <img src="{% static 'img/localisation.png' %}" width="50">
+                        <h6>Notre bureau principal</h6>
+                        <small>Port-au-Prince, Haïti</small>
+                    </div>
+                </div>
+
+                <!-- Téléphone -->
+                <div class="col-6">
+                    <div class="contact-card">
+                        <div class="contact-icon">📞</div>
+                        <h6>Numéro de téléphone</h6>
+                        <a href="tel:+50941470112">+509 41470112</a>
+                    </div>
+                </div>
+
+                <!-- WhatsApp -->
+                <div class="col-6">
+                    <div class="contact-card">
+                        <img src="{% static 'img/LOGO_WHATSAPP.png' %}" width="50">
+                        <h6>WhatsApp</h6>
+                        <a href="https://wa.me/50948869927" target="_blank">
+                            +509 48869927
+
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="col-6">
+                    <div class="contact-card">
+                        <div class="contact-icon">✉️</div>
+                        <h6>E-mail</h6>
+                        <a href="mailto:lausafashion25@gmail.com">
+                            lausafashion25@gmail.com
+                        </a>
+                    </div>
+                </div>
+
+            </div>
         </div>
-        <div class="mb-3">
-            <input type="email" name="email" class="form-control" placeholder="Votre email" required>
+
+        <!-- Formulaire -->
+        <div class="col-md-6">
+            <div class="contact-form-box">
+                <h3 class="contact-title">Nous contacter</h3>
+
+                {% if success %}
+                <div class="alert alert-success">
+                    Votre message a été envoyé avec succès.
+                </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <input type="text" name="nom" class="form-control" placeholder="Entrer votre nom" required>
+
+                    <input type="email" name="email" class="form-control" placeholder="Entrer votre email" required>
+
+                    <textarea name="message" class="form-control" rows="4" placeholder="Entrer votre message" required></textarea>
+
+                    <button class="btn btn-dark w-100">
+                        Nous faire parvenir
+                    </button>
+                </form>
+            </div>
         </div>
-        <div class="mb-3">
-            <textarea name="message" class="form-control" rows="4" placeholder="Votre message..." required></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Envoyer</button>
-    </form>
+
+    </div>
 </div>
+
 {% endblock %}

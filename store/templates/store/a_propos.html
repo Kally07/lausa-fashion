@@ -1,20 +1,55 @@
 {% extends 'store/base.html' %}
+{% load static %}
 
 {% block title %}À propos{% endblock %}
 
 {% block content %}
-    <h2>À propos de Lausa Fashion</h2>
-    <p>
-        Bienvenue Sur <strong>Lausa Fashion </strong> 🛒.  <br>
-        Nous proposons des produits de qualite, livrés rapidement à votre porte.
-    </p>
-    <p>
-       La mission de Lausa Fashion est d'offrir des vetements et accessoires de qualite,
-        tendance et accessibles, <br>tout en garantissant la satisfaction des clients grace 
-        a un service efficace et une gestion moderne.
-    </p>
-    <p>
-        Merci de faire confiance à <strong>Lausa Fashion</strong> pour vos besoins quotidiens. 
-        Nous sommes impatients de vous servir !
-    </p>
+<div class="container mt-5">
+
+    <!-- Header principal -->
+    <div class="text-center mb-5">
+        <h1 class="display-4"><strong>Lausa Fashion</strong></h1>
+        <p class="lead">Votre destination en ligne pour vêtements et accessoires tendance, de qualité et accessibles 🛒</p>
+        
+    </div>
+
+    <!-- Mission -->
+    <div class="row align-items-center mb-5">
+        <div class="col-md-6">
+            <img src="{% static 'img/shop1.jpg' %}" alt="Notre mission" class="img-fluid rounded shadow-sm" style="max-width:80%;">
+        </div>
+        <div class="col-md-6">
+            <h2>Notre mission</h2>
+            <p>
+                Chez <strong>Lausa Fashion</strong>, notre mission est de fournir des produits alliant style, confort et durabilité. 
+                Grâce à une gestion moderne et un service client réactif, chaque commande vous parvient rapidement et sans tracas.
+            </p>
+        </div>
+    </div>
+
+    <!-- Valeurs -->
+    <div class="row align-items-center mb-5">
+        <div class="col-md-6 order-md-2">
+            <img src="{% static 'img/shop1.jpg' %}" alt="Nos valeurs" class="img-fluid rounded shadow-sm" style="max-width:80%;">
+        </div>
+        <div class="col-md-6 order-md-1">
+            <h2>Nos valeurs</h2>
+            <ul class="list-unstyled">
+                <li class="mb-2"><i class="bi bi-check-circle-fill text-success"></i> <strong>Qualité :</strong> Produits soigneusement sélectionnés.</li>
+                <li class="mb-2"><i class="bi bi-check-circle-fill text-success"></i> <strong>Tendance :</strong> Collections à la pointe de la mode.</li>
+                <li class="mb-2"><i class="bi bi-check-circle-fill text-success"></i> <strong>Satisfaction client :</strong> Votre expérience est notre priorité.</li>
+                <li class="mb-2"><i class="bi bi-check-circle-fill text-success"></i> <strong>Rapidité :</strong> Livraison rapide directement à votre porte.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Message final -->
+    <div class="text-center mb-5">
+        <h2>Merci de votre confiance !</h2>
+        <p>
+            Nous sommes impatients de vous accompagner dans votre style quotidien et de rendre vos achats agréables et simples.
+        </p>
+        <a href="{% url 'store:liste_produits' %}" class="btn btn-primary btn-lg mt-3">Découvrez nos produits</a>
+    </div>
+</div>
 {% endblock %}
