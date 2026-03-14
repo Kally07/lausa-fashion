@@ -15,7 +15,14 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ produit.nom }}</h5>
                             <p class="card-text">{{ produit.prix }} HTG</p>
-                            <a href="#" class="btn btn-primary">Voir produit</a>
+                            <button 
+                                class="btn btn-outline-primary mt-auto ajouter-panier-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#ajouterPanierModal"
+                                data-produit-id="{{ produit.id }}"
+                                data-stock="{{ produit.stock }}">
+                                Ajouter au panier
+                            </button>
                         </div>
                     </div>
                 </div>
