@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
+from store import views as store_views  # importer la vue index
 
 urlpatterns = [
     path('admin/', admin.site.urls),    
@@ -25,7 +26,7 @@ urlpatterns = [
     path("dashboard/", include("dashboard.urls", namespace='dashboard')),
     path("accounts/", include("accounts.urls", namespace='accounts')),
     path("livreur/", include("livreur.urls", namespace='livreur')),
-    
+    path('', store_views.index, name='home'),
 ]
 
 if settings.DEBUG:
