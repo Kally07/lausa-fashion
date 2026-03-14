@@ -5,10 +5,12 @@ charset-normalizer==3.4.4
 Django==6.0.1
 django-adminlte3==0.1.6
 django-material==1.12.0
+gunicorn==25.1.0
 idna==3.11
 lance-namespace==0.4.5
 lance-namespace-urllib3-client==0.4.5
 numpy==2.4.1
+packaging==26.0
 pillow==12.1.0
 pyarrow==23.0.0
 pydantic==2.12.5
