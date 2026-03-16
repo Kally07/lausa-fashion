@@ -49,110 +49,204 @@
 <body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<header style="background-color: #f8f9fa;">
-    <!-- NAVBAR PRINCIPAL -->
-    <div class="container-fluid px-4 py-3">
-        <div class="d-flex align-items-center justify-content-between">
+<style>
+  /* LOGO */
+.logo-img{
+height:45px;
+}
 
-            <!-- LOGO -->
-            <div class="d-flex align-items-center">
-                <a href="{% url 'store:index' %}" class="navbar-brand d-flex align-items-center me-4">
-                    <img src="{% static 'Logo/LausaFashion_1.png' %}" alt="Logo Losa Store" style="height: 75px; margin-right: 10px; margin-bottom: -20px; margin-top: -20px;">
-                </a>
-            </div>
+/* MENU */
+.logo-img{
+height:40px;
+width:auto;
+display:block;
+}
 
-            <!-- MENU PRINCIPAL -->
-            <nav class="d-none d-md-flex align-items-center flex-grow-1">
-                <a href="{% url 'store:liste_produits' %}" class="nav-link px-3">Produits</a>
-                <a href="{% url 'store:contact' %}" class="nav-link px-3">Contact</a>
-                <a href="{% url 'store:apropos' %}" class="nav-link px-3">À propos</a>
-            </nav>
+.header-main{
+flex-wrap:nowrap;
+}
 
-            <!-- COMPTE & PANIER -->
-            <div class="d-flex align-items-center">
-                {% if user.is_authenticated %}
-                    <a href="{% url 'store:panier' %}" class="btn btn-warning me-3 position-relative">
-                        🛒 Panier
-                        <span id="panier-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            {{ panier_count }}
-                        </span>
-                    </a>
-                    <div class="dropdown">
-                        <a class="dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa fa-user me-1"></i> {{ user.username }}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="{% url 'store:mes_commandes' %}"><i class="fa fa-box me-2"></i> Mes commandes</a></li>
-                            <li><a class="dropdown-item text-danger" href="{% url 'accounts:deconnexion' %}"><i class="fa fa-sign-out-alt me-2"></i> Déconnexion</a></li>
-                        </ul>
-                    </div>
-                {% else %}
-                    <a href="{% url 'accounts:connexion' %}" class="btn btn-primary me-2">Connexion</a>
-                    <a href="{% url 'accounts:inscription' %}" class="btn btn-success">Créer un compte</a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+.menu-principal{
+display:flex;
+gap:15px;
+flex-grow:1;
+}
 
-    <!-- BARRE CATEGORIES + RECHERCHE -->
-    <div class="container-fluid px-4 py-3 bg-white border-top d-none d-lg-flex align-items-center">
-        <!-- CATEGORIES -->
-        <div class="me-4">
-          <div class="dropdown">
-            <button
-              class="btn btn-outline-secondary dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <i class="fa fa-bars me-2"></i> Toutes les catégories
-            </button>
+.menu-principal a{
+white-space:nowrap;
+font-weight:500;
+}
 
-            <ul class="dropdown-menu p-2 dropdown-menu-scrollable" style="min-width: 260px;">
-              {% for categorie in categories %}
-                <li class="mb-2">
-                  <strong class="dropdown-header">{{ categorie.nom }}</strong>
+/* SEARCH BAR */
+.header-search{
+overflow-x:auto;
+}
 
-                  {% if categorie.sous_categories.exists %}
-                    <ul class="list-unstyled ms-3">
-                      {% for sous in categorie.sous_categories.all %}
-                        <li>
-                          <a href="{% url 'store:produits_sous_categorie' sous.id %}" class="dropdown-item">
-                            ▸ {{ sous.nom }}
-                          </a>
-                        </li>
-                      {% endfor %}
-                    </ul>
-                  {% else %}
-                    <span class="dropdown-item text-muted ms-3"></span>
-                  {% endif %}
-                </li>
-                <li><hr class="dropdown-divider"></li>
-              {% empty %}
-                <li class="dropdown-item text-muted">Aucune catégorie</li>
-              {% endfor %}
-            </ul>
-          </div>
-        </div>   
-        <!-- RECHERCHE -->
-        <div class="flex-grow-1">
-            <form method="post" action="{% url 'store:recherche' %}" class="d-none d-lg-flex me-3">
-                {% csrf_token %}
-                <div class="input-group">
-                    <input type="text" name="q" class="form-control border-end-0"
-                        placeholder="Rechercher un produit..."
-                        style="border-top-left-radius: 50px; border-bottom-left-radius: 50px;">
-                    <button class="btn btn-warning d-flex align-items-center justify-content-center"
-                            type="submit"
-                            style="border-top-right-radius: 50px; border-bottom-right-radius: 50px; padding: 0 20px;">
-                        <i class="fas fa-search text-white"></i>
-                    </button>
-                </div>
-            </form>
-        </div>
+/* MOBILE ADAPTATION */
+@media (max-width:768px){
+.logo-img{
+height:32px;
+}
 
-    </div>
+.menu-principal a{
+font-size:14px;
+}
+
+.header-actions .btn{
+padding:5px 8px;
+font-size:14px;
+}
+
+}
+</style>
+
+<header class="bg-light">
+
+<!-- NAVBAR PRINCIPALE -->
+<div class="container-fluid px-3 py-2">
+
+<div class="d-flex align-items-center justify-content-between flex-nowrap header-main">
+
+<!-- LOGO -->
+<div class="logo flex-shrink-0 me-3">
+    <a href="{% url 'store:index' %}">
+        <img src="{% static 'Logo/LausaFashion_1.png' %}" class="logo-img">
+    </a>
+</div>
+
+
+<!-- MENU -->
+<nav class="menu-principal d-flex flex-nowrap">
+
+<a href="{% url 'store:liste_produits' %}" class="nav-link px-2">Produits</a>
+<a href="{% url 'store:contact' %}" class="nav-link px-2">Contact</a>
+<a href="{% url 'store:apropos' %}" class="nav-link px-2">À propos</a>
+
+</nav>
+
+<!-- PANIER / COMPTE -->
+<div class="header-actions d-flex align-items-center ms-3">
+
+{% if user.is_authenticated %}
+
+<a href="{% url 'store:panier' %}" class="btn btn-warning me-3 position-relative">
+
+🛒
+
+<span id="panier-count"
+class="position-absolute top-0 start-100 translate-middle badge bg-danger">
+{{ panier_count }}
+</span>
+
+</a>
+
+<div class="dropdown">
+
+<a class="dropdown-toggle text-dark text-nowrap" data-bs-toggle="dropdown">
+<i class="fa fa-user"></i> {{ user.username }}
+</a>
+
+<ul class="dropdown-menu dropdown-menu-end">
+
+<li>
+<a class="dropdown-item" href="{% url 'store:mes_commandes' %}">
+Mes commandes
+</a>
+</li>
+
+<li>
+<a class="dropdown-item text-danger" href="{% url 'accounts:deconnexion' %}">
+Déconnexion
+</a>
+</li>
+
+</ul>
+
+</div>
+
+{% else %}
+
+<a href="{% url 'accounts:connexion' %}" class="btn btn-primary me-2">
+Connexion
+</a>
+
+<a href="{% url 'accounts:inscription' %}" class="btn btn-success">
+Créer un compte
+</a>
+
+{% endif %}
+
+</div>
+
+</div>
+</div>
+
+
+<!-- BARRE CATEGORIES + RECHERCHE -->
+<div class="container-fluid px-3 py-2 border-top">
+
+<div class="d-flex align-items-center flex-nowrap header-search">
+
+<!-- CATEGORIES -->
+<div class="me-3">
+
+<div class="dropdown">
+
+<button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+
+<i class="fa fa-bars me-2"></i>
+Toutes les catégories
+
+</button>
+
+<ul class="dropdown-menu">
+
+{% for categorie in categories %}
+
+<li class="dropdown-header">{{ categorie.nom }}</li>
+
+{% for sous in categorie.sous_categories.all %}
+
+<li>
+<a class="dropdown-item"
+href="{% url 'store:produits_sous_categorie' sous.id %}">
+{{ sous.nom }}
+</a>
+</li>
+
+{% endfor %}
+
+<li><hr class="dropdown-divider"></li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+</div>
+
+<!-- RECHERCHE -->
+<form method="post" action="{% url 'store:recherche' %}" class="flex-grow-1 d-flex">
+
+{% csrf_token %}
+
+<input type="text"
+name="q"
+class="form-control border-end-0"
+placeholder="Rechercher un produit...">
+
+<button class="btn btn-warning">
+<i class="fa fa-search text-white"></i>
+</button>
+
+</form>
+
+</div>
+</div>
+
 </header>
+
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="{% static 'js/main.js' %}"></script>

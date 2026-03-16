@@ -68,11 +68,101 @@
         .menu-item.open > .menu-sub {
             display: block;
         }
+
+        /* Layout général */
+        html, body {
+            height: 100%;
+        }
+
+        /* Wrapper */
+        .layout-wrapper,
+        .layout-container,
+        .layout-page {
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .layout-menu {
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        /* Navbar fixe */
+        .layout-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        /* Contenu principal */
+        .content-wrapper {
+            min-height: calc(100vh - 64px);
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        /* Sous-menus */
+        .menu-sub {
+            display: none;
+            list-style: none;
+            padding-left: 1.5rem;
+        }
+
+        .menu-item.open > .menu-sub {
+            display: block;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1199px) {
+
+            .layout-menu {
+                position: fixed;
+                left: -260px;
+                width: 260px;
+                top: 0;
+                bottom: 0;
+                z-index: 1050;
+                transition: all 0.3s ease;
+            }
+
+            .layout-menu.active {
+                left: 0;
+            }
+
+            .layout-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.4);
+                z-index: 1040;
+                display: none;
+            }
+
+            .layout-overlay.active {
+                display: block;
+            }
+
+            .layout-page {
+                margin-left: 0;
+            }
+        }
+
+        /* Très petit écran */
+        @media (max-width: 576px) {
+
+            .content-wrapper {
+                padding: 1rem;
+            }
+
+            .navbar-nav-right {
+                width: 100%;
+            }
+
+        }
     </style>
 </head>
 
 <body>
-
+    <div class="layout-overlay" id="layout-overlay"></div>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
 
@@ -314,7 +404,10 @@
                 <!-- Navbar -->
                 <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
                     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-
+                        <!-- Bouton menu mobile -->
+                        <button class="btn btn-outline-primary d-xl-none me-3" id="menu-toggle">
+                            <i class="bx bx-menu"></i>
+                        </button>
                         <!-- MESSAGE DE BIENVENUE -->
                         {% if request.user.is_authenticated %}
                         <div class="me-4 d-none d-lg-block">
@@ -411,14 +504,35 @@
     <script>
         // JS pour ouvrir les sous-menus
         document.addEventListener("DOMContentLoaded", function() {
-            const toggles = document.querySelectorAll(".menu-toggle");
-            toggles.forEach(function(toggle) {
-                toggle.addEventListener("click", function(e) {
-                    e.preventDefault();
-                    this.parentElement.classList.toggle("open");
-                });
+
+        const toggles = document.querySelectorAll(".menu-toggle");
+        const menu = document.getElementById("layout-menu");
+        const overlay = document.getElementById("layout-overlay");
+        const menuToggleBtn = document.getElementById("menu-toggle");
+
+        // Sous-menus
+        toggles.forEach(function(toggle) {
+            toggle.addEventListener("click", function(e) {
+                e.preventDefault();
+                this.parentElement.classList.toggle("open");
             });
         });
+
+        // Menu mobile
+        if(menuToggleBtn){
+            menuToggleBtn.addEventListener("click", function(){
+                menu.classList.toggle("active");
+                overlay.classList.toggle("active");
+            });
+        }
+
+        // fermer en cliquant sur overlay
+        overlay.addEventListener("click", function(){
+            menu.classList.remove("active");
+            overlay.classList.remove("active");
+        });
+
+    });
     </script>
 
     {% block extra_js %}{% endblock %}
