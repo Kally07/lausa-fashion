@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-4$#x+%hb__t+e#7&u&(0p%&%r0qw*3t@_@de+k@=hh)8)7m!k1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["lausa-fashion.onrender.com"]
+ALLOWED_HOSTS = [lausa-fashion.onrender.com]
 
 
 # Application definition

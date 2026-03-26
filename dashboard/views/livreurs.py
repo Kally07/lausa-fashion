@@ -70,7 +70,6 @@ def livreur_associer(request):
             utilisateur=utilisateur,
             moyen_transport=moyen_transport,
             telephone=telephone,
-            statut=True
         )
         messages.success(request, f"Utilisateur {utilisateur.username} associé comme livreur.")
         return redirect("dashboard:livreurs_liste")
